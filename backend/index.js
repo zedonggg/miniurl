@@ -5,6 +5,7 @@ const redis = require('redis')
 
 const app = express()
 app.use(express.json())
+app.use(express.static('dist'))
 
 const redisClients = [
     redis.createClient({
@@ -54,7 +55,7 @@ app.get('/:miniurl', async (req, res) => {
     let result = await client.get(miniurl)
 
     if (result === null) {
-        return res.status(404).send('Not Found')
+        return res.sendFile(require('path').resolve(__dirname, 'dist', 'index.html'))
     } else {
         if (!/^https?:\/\//i.test(result)) {
             result = 'https://' + result;
