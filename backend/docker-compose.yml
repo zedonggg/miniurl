@@ -1,0 +1,51 @@
+services:
+  redis1:
+    image: redis
+    container_name: redis1
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis1-data:/data
+    restart: unless-stopped
+
+  redis2:
+    image: redis
+    container_name: redis2
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis2-data:/data
+    restart: unless-stopped
+
+  redis3:
+    image: redis
+    container_name: redis3
+    ports:
+      - "6381:6379"
+    volumes:
+      - redis3-data:/data
+    restart: unless-stopped
+
+  backend:
+    build: .
+    container_name: miniurl
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      REDIS_HOST_1: redis1
+      REDIS_PORT_1: 6379
+      REDIS_HOST_2: redis2
+      REDIS_PORT_2: 6379
+      REDIS_HOST_3: redis3
+      REDIS_PORT_3: 6379
+    depends_on:
+      - redis1
+      - redis2
+      - redis3
+    restart: unless-stopped
+
+volumes:
+  redis1-data:
+  redis2-data:
+  redis3-data:
